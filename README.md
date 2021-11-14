@@ -1,3 +1,4 @@
+
 # Lab: 26
 
 in this lab we created a three pages:
