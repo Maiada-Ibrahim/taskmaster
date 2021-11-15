@@ -1,3 +1,4 @@
+
 # Lab: 26
 
 in this lab we created a three pages:
@@ -8,6 +9,7 @@ in this lab we created a three pages:
 - All Tasks page: in this page nothing added till now.
 
   
+
 <!-- ![](./screenshots/lab26.png) -->
 ![](lab26.png)
 
@@ -19,4 +21,3 @@ in this lab we created new two pages
 - setting page: that accept the user name and render it to the homepage.
 ![](lab27.png)
 
------------------------------------------------------------------------------------------
