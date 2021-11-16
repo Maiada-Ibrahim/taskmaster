@@ -21,3 +21,12 @@ in this lab we created new two pages
 - setting page: that accept the user name and render it to the homepage.
 ![](lab27.png)
 
+
+-----------------------------------------------------------------------------------------
+# Lab: 28 - RecyclerView
+In this lab I use a recycler view to show all tasks that the user had and implemented the task class with the appropriate data and displayed each task when clicked on an activity that shows task details.
+
+Main Activity Added the recycler view to the main activity to show all the hard coded tasks and the user can click on them.
+
+![](lab-28.png)
+

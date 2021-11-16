@@ -1,6 +1,8 @@
 package com.example.taskmaster;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,8 +13,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.net.CookieHandler;
+import java.util.ArrayList;
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity implements taskAdapter.OnNoteListener {
+    private RecyclerView mRecyclerView;
+    // vars
+    private ArrayList<Task> tasksList = new ArrayList<>();
+    private taskAdapter taskAdapterObj;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,43 +46,43 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(goToallTask);
             }
         });
-        Button detail1 = findViewById(R.id.detail1);
-        detail1.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-//                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
-                Intent goToDetail1 = new Intent(MainActivity.this, Detail.class);
-                goToDetail1.putExtra("detail", "detail1");
-                startActivity(goToDetail1);
-            }
-        });
+//        Button detail1 = findViewById(R.id.detail1);
+//        detail1.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick (View v){
+////                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+//                Intent goToDetail1 = new Intent(MainActivity.this, Detail.class);
+//                goToDetail1.putExtra("detail", "detail1");
+//                startActivity(goToDetail1);
+//            }
+//        });
 
-        Button detail2 = findViewById(R.id.detail2);
-        detail2.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-//                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
-                Intent goToDetail2 = new Intent(MainActivity.this, Detail.class);
-                goToDetail2.putExtra("detail", "detail2");
-                startActivity(goToDetail2);
-            }
-        });
+//        Button detail2 = findViewById(R.id.detail2);
+//        detail2.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick (View v){
+////                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+//                Intent goToDetail2 = new Intent(MainActivity.this, Detail.class);
+//                goToDetail2.putExtra("detail", "detail2");
+//                startActivity(goToDetail2);
+//            }
+//        });
 
 
-
-        Button detail3 = findViewById(R.id.detail3);
-        detail3.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-//                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
-                Intent goToDetail3 = new Intent(MainActivity.this, Detail.class);
-                goToDetail3.putExtra("detail", "detail3");
-                startActivity(goToDetail3);
-            }
-        });
+//
+//        Button detail3 = findViewById(R.id.detail3);
+//        detail3.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick (View v){
+////                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+//                Intent goToDetail3 = new Intent(MainActivity.this, Detail.class);
+//                goToDetail3.putExtra("detail", "detail3");
+//                startActivity(goToDetail3);
+//            }
+//        });
 
 
 
@@ -89,6 +98,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        List<Task> taskList = new ArrayList<Task>();
+        taskList.add(new Task("task1","do math home work","new"));
+        taskList.add(new Task("task2","cook lunch","assigned"));
+        taskList.add(new Task("task3","visit my uncle","in progress"));
+        taskList.add(new Task("task4","fix the car ","complete"));
+
+
+        RecyclerView recyclerView = findViewById(R.id.tasksRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new taskAdapter(taskList,this));
     }
 
     @Override
@@ -101,4 +120,18 @@ public class MainActivity extends AppCompatActivity {
         userNameHolder.setText(userName);
     }
 
+
+//    @Override
+//    public void onNoteClick(int position) {
+//        Intent intent = new Intent(this, Detail.class);
+////        intent.putExtra("selected_note", tasksList.);
+//        startActivity(intent);
+//    }
+
+    @Override
+    public void onNoteClick(int position, Task task) {
+        Intent intent = new Intent(this, Detail.class);
+        intent.putExtra("detail",task.getTitle());
+        startActivity(intent);
+    }
 }
