@@ -25,4 +25,4 @@ In this lab I use a recycler view to show all tasks that the user had and implem
 
 Main Activity Added the recycler view to the main activity to show all the hard coded tasks and the user can click on them.
 
-![](lab-28)
+![](lab-28.png)
