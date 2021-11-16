@@ -101,5 +101,4 @@ public class MainActivity extends AppCompatActivity {
         userNameHolder.setText(userName);
     }
 
-
 }
