@@ -16,5 +16,14 @@ public class all_Task extends AppCompatActivity {
         setContentView(R.layout.activity_all_task);
 
 
+        Button back = findViewById(R.id.Back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent goToallTask = new Intent(all_Task.this, MainActivity.class);
+                startActivity(goToallTask);
+            }
+        });
+
     }
 }
