@@ -46,43 +46,43 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
                 startActivity(goToallTask);
             }
         });
-        Button detail1 = findViewById(R.id.detail1);
-        detail1.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-//                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
-                Intent goToDetail1 = new Intent(MainActivity.this, Detail.class);
-                goToDetail1.putExtra("detail", "detail1");
-                startActivity(goToDetail1);
-            }
-        });
+//        Button detail1 = findViewById(R.id.detail1);
+//        detail1.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick (View v){
+////                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+//                Intent goToDetail1 = new Intent(MainActivity.this, Detail.class);
+//                goToDetail1.putExtra("detail", "detail1");
+//                startActivity(goToDetail1);
+//            }
+//        });
 
-        Button detail2 = findViewById(R.id.detail2);
-        detail2.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-//                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
-                Intent goToDetail2 = new Intent(MainActivity.this, Detail.class);
-                goToDetail2.putExtra("detail", "detail2");
-                startActivity(goToDetail2);
-            }
-        });
+//        Button detail2 = findViewById(R.id.detail2);
+//        detail2.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick (View v){
+////                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+//                Intent goToDetail2 = new Intent(MainActivity.this, Detail.class);
+//                goToDetail2.putExtra("detail", "detail2");
+//                startActivity(goToDetail2);
+//            }
+//        });
 
 
-
-        Button detail3 = findViewById(R.id.detail3);
-        detail3.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick (View v){
-//                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
-                Intent goToDetail3 = new Intent(MainActivity.this, Detail.class);
-                goToDetail3.putExtra("detail", "detail3");
-                startActivity(goToDetail3);
-            }
-        });
+//
+//        Button detail3 = findViewById(R.id.detail3);
+//        detail3.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick (View v){
+////                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+//                Intent goToDetail3 = new Intent(MainActivity.this, Detail.class);
+//                goToDetail3.putExtra("detail", "detail3");
+//                startActivity(goToDetail3);
+//            }
+//        });
 
 
 
