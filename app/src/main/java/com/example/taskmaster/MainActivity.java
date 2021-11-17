@@ -98,16 +98,13 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
             }
         });
 
-        List<Task> taskList = new ArrayList<Task>();
-        taskList.add(new Task("task1","do math home work","new"));
-        taskList.add(new Task("task2","cook lunch","assigned"));
-        taskList.add(new Task("task3","visit my uncle","in progress"));
-        taskList.add(new Task("task4","fix the car ","complete"));
+//        List<Task> taskList = new ArrayList<Task>();
+//        taskList.add(new Task("task1","do math home work","new"));
+//        taskList.add(new Task("task2","cook lunch","assigned"));
+//        taskList.add(new Task("task3","visit my uncle","in progress"));
+//        taskList.add(new Task("task4","fix the car ","complete"));
+//        DataBase.getDataBaseObj(this);
 
-
-        RecyclerView recyclerView = findViewById(R.id.tasksRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new taskAdapter(taskList,this));
     }
 
     @Override
@@ -118,6 +115,16 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 //        Toast.makeText(this, userName,Toast.LENGTH_LONG).show();
         TextView userNameHolder = findViewById(R.id.userNameLable);
         userNameHolder.setText(userName);
+
+
+        List<Task> tasks ;
+        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
+        Daorep taskDao = db.taskDao();
+        tasks = taskDao.getAll();
+
+        RecyclerView recyclerView = findViewById(R.id.tasksRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new taskAdapter(tasks,this));
     }
 
 
@@ -131,7 +138,11 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
     @Override
     public void onNoteClick(int position, Task task) {
         Intent intent = new Intent(this, Detail.class);
-        intent.putExtra("detail",task.getTitle());
+        intent.putExtra("detail", ( task.getTitle()));
+        intent.putExtra("detail_body", ( task.getBody()));
+        intent.putExtra("detail_state", ( task.getState()));
+
+
         startActivity(intent);
     }
 }
