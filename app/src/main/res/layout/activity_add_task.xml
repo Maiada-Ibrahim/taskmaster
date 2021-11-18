@@ -35,8 +35,8 @@
 
     <EditText
         android:id="@+id/titlAdd"
-        android:layout_width="228dp"
-        android:layout_height="49dp"
+        android:layout_width="217dp"
+        android:layout_height="50dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="My Task"
@@ -113,12 +113,16 @@
 
     <EditText
         android:id="@+id/stateAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="244dp"
+        android:layout_height="54dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="State"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="428dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.252"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.62" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

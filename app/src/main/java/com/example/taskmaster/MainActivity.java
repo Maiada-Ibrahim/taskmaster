@@ -137,10 +137,18 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 
     @Override
     public void onNoteClick(int position, Task task) {
+        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
+        Daorep taskDao = db.taskDao();
         Intent intent = new Intent(this, Detail.class);
-        intent.putExtra("detail", ( task.getTitle()));
-        intent.putExtra("detail_body", ( task.getBody()));
-        intent.putExtra("detail_state", ( task.getState()));
+
+
+        taskDao.findTaskByUid(task.getId());
+        intent.putExtra("detail1", taskDao.findTaskByUid(task.getId()).getId());
+
+//        intent.putExtra("detail", ( task.getTitle()));
+//        intent.putExtra("detail_body", ( task.getBody()));
+//        intent.putExtra("detail_state", ( task.getState()));
+
 
 
         startActivity(intent);

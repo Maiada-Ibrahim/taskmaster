@@ -19,6 +19,6 @@ public interface Daorep {
     @Delete
     void delete(Task task);
 
-    @Query("SELECT * FROM task WHERE id IN (:taskId)")
-    Task gettaskobj( int taskId);
+@Query("SELECT * FROM Task WHERE id LIKE :id")
+Task findTaskByUid(int id);
 }
