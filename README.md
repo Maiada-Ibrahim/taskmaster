@@ -33,3 +33,6 @@ in this lab we user the room, which is an ORM (object relational mapper) for SQL
 
 ![](lab-29.png)
 
+# Lab: 32 - Amplify and DynamoDB
+in this lab, we created cloud storage, on which each time the data saved it, hit the aws server , and store at the database.Also, the at the all list activity will fetch all the data (tasks) form the server and list them using recycle view.
+

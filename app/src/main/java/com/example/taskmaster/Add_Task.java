@@ -4,10 +4,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.amplifyframework.api.graphql.model.ModelMutation;
+import com.amplifyframework.core.Amplify;
+import com.amplifyframework.datastore.generated.model.Task;
 
 import java.util.List;
 
@@ -34,8 +39,18 @@ public class Add_Task extends AppCompatActivity {
                 String getinputBody = inputBody.getText().toString();
                 String getinputState = inputState.getText().toString();
 
-                taskDao.insertAll(new Task(getinputTitle,getinputBody,getinputState));
+//                taskDao.insertAll(new Task(getinputTitle,getinputBody,getinputState));
+                Task task = Task.builder()
+                        .title(getinputTitle)
+                        .body(getinputBody)
+                        .state(getinputState)
+                        .build();
 
+                Amplify.API.mutate(
+                        ModelMutation.create(task),
+                        response -> Log.i("MyAmplifyApp", "Added Todo with id: " + response.getData().getId()),
+                        error -> Log.e("MyAmplifyApp", "Create failed", error)
+                );
 
                 Toast.makeText(getApplicationContext(), "submitted!", Toast.LENGTH_LONG).show();
                 finish();
