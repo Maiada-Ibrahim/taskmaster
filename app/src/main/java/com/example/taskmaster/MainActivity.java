@@ -1,27 +1,40 @@
 package com.example.taskmaster;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.net.CookieHandler;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.amplifyframework.AmplifyException;
+import com.amplifyframework.api.aws.AWSApiPlugin;
+import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.core.Amplify;
+
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
 
 public class MainActivity extends AppCompatActivity implements taskAdapter.OnNoteListener {
     private RecyclerView mRecyclerView;
     // vars
     private ArrayList<Task> tasksList = new ArrayList<>();
     private taskAdapter taskAdapterObj;
+    private taskAdapter taskAdapter;
+
+    AtomicReference<List<com.amplifyframework.datastore.generated.model.Task>> tasks1 = new AtomicReference<>(new ArrayList<>());
+    private RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +118,18 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 //        taskList.add(new Task("task4","fix the car ","complete"));
 //        DataBase.getDataBaseObj(this);
 
+
+//---------------------lab32
+        try {
+            // Add these lines to add the AWSApiPlugin plugins
+            Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.configure(getApplicationContext());
+
+            Log.i("MyAmplifyApp", "Initialized Amplify");
+        } catch (AmplifyException error) {
+            Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
+        }
+
     }
 
     @Override
@@ -117,14 +142,50 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
         userNameHolder.setText(userName);
 
 
-        List<Task> tasks ;
-        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
-        Daorep taskDao = db.taskDao();
-        tasks = taskDao.getAll();
+//        List<Task> tasks ;
+//        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
+//        Daorep taskDao = db.taskDao();
+//        tasks = taskDao.getAll();
 
-        RecyclerView recyclerView = findViewById(R.id.tasksRecyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new taskAdapter(tasks,this));
+
+
+
+
+
+    //lab32
+        ArrayList<com.amplifyframework.datastore.generated.model.Task> tasksFirst =new  ArrayList<>();
+
+
+        Amplify.API.query(
+                ModelQuery.list(com.amplifyframework.datastore.generated.model.Task.class),
+                response -> {
+                    for (com.amplifyframework.datastore.generated.model.Task task : response.getData()) {
+                        Log.i("MyAmplifyApp", task.getTitle());
+                        tasksFirst.add(task);
+
+                    }
+                    tasks1.set(tasksFirst);
+                    System.out.println(tasks1);
+
+                },
+                error -> Log.e("MyAmplifyApp", "Query failure", error)
+        );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
@@ -136,14 +197,14 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 //    }
 
     @Override
-    public void onNoteClick(int position, Task task) {
-        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
-        Daorep taskDao = db.taskDao();
-        Intent intent = new Intent(this, Detail.class);
+    public void onNoteClick(int position, com.amplifyframework.datastore.generated.model.Task task) {
+//        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
+//        Daorep taskDao = db.taskDao();
+//        Intent intent = new Intent(this, Detail.class);
 
-
-        taskDao.findTaskByUid(task.getId());
-        intent.putExtra("detail1", taskDao.findTaskByUid(task.getId()).getId());
+        System.out.println("k");
+//        tasks.findTaskByUid(task.getId());
+//        intent.putExtra("detail1", taskDao.findTaskByUid(task.getId()).getId());
 
 //        intent.putExtra("detail", ( task.getTitle()));
 //        intent.putExtra("detail_body", ( task.getBody()));
@@ -151,6 +212,6 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 
 
 
-        startActivity(intent);
+//        startActivity(intent);
     }
 }
