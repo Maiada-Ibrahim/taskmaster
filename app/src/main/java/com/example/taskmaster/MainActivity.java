@@ -1,14 +1,21 @@
 package com.example.taskmaster;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,9 +38,14 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
     private ArrayList<Task> tasksList = new ArrayList<>();
     private taskAdapter taskAdapterObj;
     private taskAdapter taskAdapter;
+    private RecyclerView recyclerView;
+    private Handler handler;
+    private SharedPreferences sharedPreferences;
+    private String teamName = "Team1";
+    ArrayList<com.amplifyframework.datastore.generated.model.Task> tasksFirst =new  ArrayList<>();
 
     AtomicReference<List<com.amplifyframework.datastore.generated.model.Task>> tasks1 = new AtomicReference<>(new ArrayList<>());
-    private RecyclerView recyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
     protected void onResume() {
         super.onResume();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
-        String userName = sharedPreferences.getString("getUserName","the user didn't add a name yet!");
+        String userName = sharedPreferences.getString("getUserName", "the user didn't add a name yet!");
 //        Toast.makeText(this, userName,Toast.LENGTH_LONG).show();
         TextView userNameHolder = findViewById(R.id.userNameLable);
         userNameHolder.setText(userName);
@@ -148,14 +160,18 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 //        tasks = taskDao.getAll();
 
 
+        //lab32
+        handler = new Handler(Looper.getMainLooper(),
+                new Handler.Callback() {
+                    @Override
+                    public boolean handleMessage(@NonNull Message message) {
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                        return false;
+                    }
+                });
 
 
-
-
-    //lab32
-        ArrayList<com.amplifyframework.datastore.generated.model.Task> tasksFirst =new  ArrayList<>();
-
-
+//        if (isNetworkAvailable(getApplicationContext()) && tasksFirst.isEmpty()){
         Amplify.API.query(
                 ModelQuery.list(com.amplifyframework.datastore.generated.model.Task.class),
                 response -> {
@@ -164,22 +180,25 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
                         tasksFirst.add(task);
 
                     }
-                    tasks1.set(tasksFirst);
-                    System.out.println(tasks1);
-
+//                    tasks1.set(tasksFirst);
+//                    System.out.println(tasks1);
+                    handler.sendEmptyMessage(1);
                 },
                 error -> Log.e("MyAmplifyApp", "Query failure", error)
         );
+//    }  else {
+//
+//            recyclerView = findViewById(R.id.tasksRecyclerView);
+//            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//            recyclerView.setAdapter(new taskAdapter(tasksFirst, this));
+
+//        }
 
 
 
 
 
-
-
-
-
-
+        setTaskAdapter();
 
 
 
@@ -188,7 +207,12 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 
     }
 
+    public void setTaskAdapter(){
+        recyclerView = findViewById(R.id.tasksRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(new taskAdapter(tasksFirst, this));
 
+        }
 //    @Override
 //    public void onNoteClick(int position) {
 //        Intent intent = new Intent(this, Detail.class);
@@ -200,18 +224,22 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
     public void onNoteClick(int position, com.amplifyframework.datastore.generated.model.Task task) {
 //        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
 //        Daorep taskDao = db.taskDao();
-//        Intent intent = new Intent(this, Detail.class);
+        Intent intent = new Intent(this, Detail.class);
 
-        System.out.println("k");
+
 //        tasks.findTaskByUid(task.getId());
 //        intent.putExtra("detail1", taskDao.findTaskByUid(task.getId()).getId());
 
-//        intent.putExtra("detail", ( task.getTitle()));
-//        intent.putExtra("detail_body", ( task.getBody()));
-//        intent.putExtra("detail_state", ( task.getState()));
+        intent.putExtra("detail",  task.getTitle());
+        intent.putExtra("detail_body", ( task.getBody()));
+        intent.putExtra("detail_state", ( task.getState()));
 
 
 
-//        startActivity(intent);
+        startActivity(intent);
+    }
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 }

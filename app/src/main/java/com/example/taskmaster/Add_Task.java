@@ -1,9 +1,11 @@
 package com.example.taskmaster;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +19,8 @@ import com.amplifyframework.datastore.generated.model.Task;
 import java.util.List;
 
 public class Add_Task extends AppCompatActivity {
-
+    private RecyclerView recyclerView;
+    private Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +51,11 @@ public class Add_Task extends AppCompatActivity {
 
                 Amplify.API.mutate(
                         ModelMutation.create(task),
-                        response -> Log.i("MyAmplifyApp", "Added Todo with id: " + response.getData().getId()),
-                        error -> Log.e("MyAmplifyApp", "Create failed", error)
-                );
+                        response -> Log.i("MyAmplifyApp", "Added Todo with id: " + response.getData().getId()
+                        ),
 
+                error -> Log.e("MyAmplifyApp", "Create failed", error)
+                );
                 Toast.makeText(getApplicationContext(), "submitted!", Toast.LENGTH_LONG).show();
                 finish();
             }
