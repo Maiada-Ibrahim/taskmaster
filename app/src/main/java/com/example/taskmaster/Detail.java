@@ -27,7 +27,9 @@ public class Detail extends AppCompatActivity {
         String TextState= getIntent().getStringExtra("detail_state");
         TextView titleholder3 = findViewById(R.id.statLable);
                 titleholder3.setText(TextState);
-
+        String TextteamNameId= getIntent().getStringExtra("team_name");
+        TextView titleholder4 = findViewById(R.id.team);
+        titleholder4.setText(TextteamNameId);
 //        titleholder3.setText(task.getState());
     }
 }

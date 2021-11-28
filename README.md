@@ -36,3 +36,6 @@ in this lab we user the room, which is an ORM (object relational mapper) for SQL
 # Lab: 32 - Amplify and DynamoDB
 in this lab, we created cloud storage, on which each time the data saved it, hit the aws server , and store at the database.Also, the at the all list activity will fetch all the data (tasks) form the server and list them using recycle view.
 
+# Lab: 33 - Related Data:
+in this lab, we created a new model at the graphql to assign the task to the team. At the biggining we hit the server (database) and save three teams for one time (teamA,B,C). After that we added a spinner at the add task activity to assign the task at one of the three teams.
+
