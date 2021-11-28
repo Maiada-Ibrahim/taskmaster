@@ -6,18 +6,26 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class Settings extends AppCompatActivity {
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-
+        spinner = findViewById(R.id.chooseTeamSpinner);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Team1", "Team2", "Team3"});
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(dataAdapter);
 
         Button saveButton = findViewById(R.id.save);
 
@@ -30,13 +38,35 @@ public class Settings extends AppCompatActivity {
                 // add value to the shared preferences
                 SharedPreferences settingShare= PreferenceManager.getDefaultSharedPreferences(Settings.this);
                 // first option
-                settingShare.edit().putString("getUserName",getUserName).apply();
+//                settingShare.edit().putString("getUserName",getUserName).apply();
                 // second option
-//                SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-//                sharedPreferencesEditor.putString("userName", userName);
+                SharedPreferences.Editor sharedPreferencesEditor = settingShare.edit();
+                sharedPreferencesEditor.putString("getUserName", getUserName);
 //                sharedPreferencesEditor.apply();
                 Toast.makeText(Settings.this,"submitted!", Toast.LENGTH_LONG).show();
+
+                switch(spinner.getSelectedItem().toString()){
+                    case "Team1":
+                        sharedPreferencesEditor.putString("teamName","Team1");
+                        sharedPreferencesEditor.apply();
+                        break;
+                    case "Team2":
+                        sharedPreferencesEditor.putString("teamName","Team2");
+                        sharedPreferencesEditor.apply();
+                        break;
+                    case "Team3":
+                        sharedPreferencesEditor.putString("teamName","Team3");
+                        sharedPreferencesEditor.apply();
+                        break;
+                }
+
+                Toast.makeText(getApplicationContext(),"Saved Username!",Toast.LENGTH_SHORT).show();
+
             }
+
+
+
+
         });
 
 
