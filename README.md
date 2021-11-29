@@ -39,3 +39,5 @@ in this lab, we created cloud storage, on which each time the data saved it, hit
 # Lab: 33 - Related Data:
 in this lab, we created a new model at the graphql to assign the task to the team. At the biggining we hit the server (database) and save three teams for one time (teamA,B,C). After that we added a spinner at the add task activity to assign the task at one of the three teams.
 
+## Lab: 36 - Cognito:
+in this lab we added an authentication system to our android application using of amplify auth. the user can create a user name and verify it using email. For this purpose signUp, Login, logout were created. 

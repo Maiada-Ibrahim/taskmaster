@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,8 +26,12 @@ import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
+import com.amplifyframework.auth.cognito.activities.HostedUIRedirectActivity;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Team;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
 
 
 import java.util.ArrayList;
@@ -50,8 +55,11 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
     AtomicReference<List<com.amplifyframework.datastore.generated.model.Task>> tasks1 = new AtomicReference<>(new ArrayList<>());
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button addTask = findViewById(R.id.addTask);
@@ -64,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
                 startActivity(goToAddTask);
             }
         });
+
+
 
 
         Button allTask = findViewById(R.id.allTask);
@@ -126,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
             }
         });
 
+
+
 //        List<Task> taskList = new ArrayList<Task>();
 //        taskList.add(new Task("task1","do math home work","new"));
 //        taskList.add(new Task("task2","cook lunch","assigned"));
@@ -138,13 +150,23 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
         try {
             // Add these lines to add the AWSApiPlugin plugins
             Amplify.addPlugin(new AWSApiPlugin());
+            Amplify.addPlugin(new AWSCognitoAuthPlugin());
             Amplify.configure(getApplicationContext());
 
             Log.i("MyAmplifyApp", "Initialized Amplify");
         } catch (AmplifyException error) {
             Log.e("MyAmplifyApp", "Could not initialize Amplify", error);
         }
-
+//        if(FirebaseAuth.getInstance().getCurrentUser()==null)
+        Amplify.Auth.signInWithWebUI(
+                this,
+                result -> Log.i("AuthQuickStart", result.toString()),
+                error -> Log.e("AuthQuickStart", error.toString())
+        );
+        Amplify.Auth.fetchAuthSession(
+                result -> Log.i("AmplifyQuickstart", result.toString()),
+                error -> Log.e("AmplifyQuickstart", error.toString())
+        );
 
 
 //        Team team1 = Team.builder().name("Team1").build();
@@ -163,18 +185,46 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 //                success -> Log.i("Tutorial", "Deleted item API: " + success.getData()),
 //                error -> Log.e("Tutorial", "Could not save item to DataStore", error)
 //        );
-
-
-
-
-
-
-
-
-
-
-
-
+//        Button logout = findViewById(R.id.logout);
+//        logout.setOnClickListener(new View.OnClickListener()
+//        {
+//            @Override
+//            public void onClick (View v){
+////                Toast.makeText(getApplicationContext(), "Button Clicked", Toast.LENGTH_LONG).show();
+////                Intent goToSetting = new Intent(MainActivity.this, Settings.class);
+////                goToDetail3.putExtra("detail", "detail3");
+////                startActivity(goToSetting);
+//                Amplify.Auth.signOut(
+//                        () -> Log.i("AuthQuickstart", "Signed out successfully"),
+//                        error -> Log.e("AuthQuickstart", error.toString())
+//                );
+//            }
+//        });
+//        Button signOutbutt= findViewById(R.id.logout);
+//        signOutbutt.setOnClickListener(v -> signout());
+//        Button  Logout = (Button) findViewById(R.id.logout);
+//        Intent in = getIntent();
+//        String string = in.getStringExtra("message");
+//        Logout.setOnClickListener(v -> {
+//            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+//            builder.setTitle("Confirmation PopUp!").
+//                    setMessage("You sure, that you want to logout?");
+//            builder.setPositiveButton("Yes",
+//                    (dialog, id) -> {
+//                        Amplify.Auth.signOut(
+//                                () -> Log.i("AuthQuickstart", "Signed out successfully"),
+//                                error -> Log.e("AuthQuickstart", error.toString())
+//                        );
+//                        Intent i = new Intent(getApplicationContext(),
+//                                com.amplifyframework.auth.cognito.activities.HostedUIRedirectActivity.class);
+//                        startActivity(i);
+//
+//                    });
+//            builder.setNegativeButton("No",
+//                    (dialog, id) -> dialog.cancel());
+//            AlertDialog alert11 = builder.create();
+//            alert11.show();
+//        });
     }
 
     @Override
@@ -219,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 
                         Log.i("MyAmplifyApp", task.getTeam().getName());
                         tasksFirst.add(task);}
-
                     }
 //
 //
@@ -276,13 +325,20 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
         intent.putExtra("detail_body", ( task.getBody()));
         intent.putExtra("detail_state", ( task.getState()));
         intent.putExtra("team_name", ( task.getTeam().getName()));
-
-
-
         startActivity(intent);
     }
     public boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
+    }
+    private void signout(){
+        Amplify.Auth.signOut(
+                () ->{
+                    Intent ToLogIn = new Intent(MainActivity.this, com.amplifyframework.auth.cognito.activities.HostedUIRedirectActivity.class);
+                    startActivity(ToLogIn);
+                }
+                ,
+                error -> Log.e("signout", "error in logging out: "+ error)
+        );
     }
 }

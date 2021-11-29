@@ -155,8 +155,6 @@ public class Add_Task extends AppCompatActivity {
 
                 Toast toast = Toast.makeText(getApplicationContext(),"Submitted!", Toast.LENGTH_SHORT);
                 toast.show();
-
-
             }
         });
 
