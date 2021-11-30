@@ -1,12 +1,31 @@
 package com.example.taskmaster;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-public class Detail extends AppCompatActivity {
+import com.amplifyframework.core.Amplify;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+
+public class Detail extends AppCompatActivity {
+    private String fileName;
+    private URL url;
+//    @SuppressLint("SetTextI18n")
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,5 +50,45 @@ public class Detail extends AppCompatActivity {
         TextView titleholder4 = findViewById(R.id.team);
         titleholder4.setText(TextteamNameId);
 //        titleholder3.setText(task.getState());
+
+
+        Amplify.Storage.getUrl(
+                fileName,
+                result -> {
+                    Log.i("MyAmplifyApp", "Successfully generated: " + result.getUrl());
+                    url= result.getUrl();
+                    System.out.println(url.toString());
+                },
+                error -> Log.e("MyAmplifyApp", "URL generation failure", error)
+        );
+
+        ImageView imageView = findViewById(R.id.imageView);
+        Amplify.Storage.downloadFile(
+                fileName,
+                new File(getApplicationContext().getFilesDir() +"/"+ fileName),
+                result -> {
+                    Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getPath());
+                    String fileType = null;
+
+                    try {
+                        fileType = Files.probeContentType(result.getFile().toPath());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (fileType.split("/")[0].equals("image")){
+                        imageView.setImageBitmap(BitmapFactory.decodeFile(result.getFile().getPath()));
+                    }
+                    else {
+                        String linkedText = String.format("<a href=\"%s\">download File</a> ", url);
+
+                        TextView test = findViewById(R.id.taskLink);
+                        test.setText(Html.fromHtml(linkedText, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                        test.setMovementMethod(LinkMovementMethod.getInstance());
+                    }
+                },
+                error -> Log.e("MyAmplifyApp",  "Download Failure ",error)
+        );
+
     }
 }
