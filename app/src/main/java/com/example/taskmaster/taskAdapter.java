@@ -27,6 +27,7 @@ public class taskAdapter extends RecyclerView.Adapter<taskAdapter.TaskViewHolder
 
 
 
+
     public static class TaskViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         // 3.4 add the view and the model object

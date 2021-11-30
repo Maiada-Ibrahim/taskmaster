@@ -1,0 +1,16 @@
+{
+  "resourceName": "datas3task",
+  "policyUUID": "a3d06748",
+  "bucketName": "datas3bucket",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

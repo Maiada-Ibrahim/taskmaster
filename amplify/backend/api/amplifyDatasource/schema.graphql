@@ -5,6 +5,7 @@ type Task @model
   title: String!
   body: String
   state: String
+  fileName: String
   team: Team @connection (fields:["teamID"])
 }
 type Team @model

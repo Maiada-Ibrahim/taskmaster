@@ -13,7 +13,8 @@
     },
     "categories": {
       "auth": {
-        "taskmaster903a9059": {}
+        "taskmaster903a9059": {},
+        "true": {}
       }
     }
   }
