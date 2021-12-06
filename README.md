@@ -50,3 +50,7 @@ in this lab we added an authentication system to our android application using o
 
 
 
+## lab 41 - intent filters
+Added intent filters to my app, which enables the user to share text files and images to my app, which in turn navigates him to "Add Task" page with file he shared filled up in form.
+![](lab-41pic1.png)
+

@@ -4,6 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ public class Detail extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
@@ -51,13 +54,14 @@ public class Detail extends AppCompatActivity {
         titleholder4.setText(TextteamNameId);
 //        titleholder3.setText(task.getState());
 
+        fileName = intent.getExtras().getString("taskFileName");
 
         Amplify.Storage.getUrl(
                 fileName,
                 result -> {
                     Log.i("MyAmplifyApp", "Successfully generated: " + result.getUrl());
                     url= result.getUrl();
-                    System.out.println(url.toString());
+
                 },
                 error -> Log.e("MyAmplifyApp", "URL generation failure", error)
         );
@@ -66,6 +70,7 @@ public class Detail extends AppCompatActivity {
         Amplify.Storage.downloadFile(
                 fileName,
                 new File(getApplicationContext().getFilesDir() +"/"+ fileName),
+
                 result -> {
                     Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getPath());
                     String fileType = null;
