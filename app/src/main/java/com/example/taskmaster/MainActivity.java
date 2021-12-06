@@ -223,12 +223,13 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
 
                     for (com.amplifyframework.datastore.generated.model.Task task : response.getData()) {
 //                        System.out.println(task.getTeam().getName());
-                        tasksFirst.clear();
-                        if(task.getTeam().getName().contains(teamName)){
+//                        tasksFirst.clear();
+//                        if(task.getTeam().getName().contains(teamName)){
                         Log.i("MyAmplifyApp", task.getTeam().getName());
 
 
-                        tasksFirst.add(task);}
+                        tasksFirst.add(task);
+//                    }
                     }
 //
 //

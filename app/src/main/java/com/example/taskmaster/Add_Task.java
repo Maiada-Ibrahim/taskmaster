@@ -82,8 +82,11 @@ public class Add_Task extends AppCompatActivity {
 
 
     private String fileType;
-
     private File uploadFile;
+
+    EditText taskTitleInput;
+    EditText taskDescriptionInput;
+    String imgSrc;
 
 
 
@@ -135,7 +138,7 @@ public class Add_Task extends AppCompatActivity {
 
                         break;
                     case "Team2":
-
+                        uploadFile();
 
                         Task task2 = Task.builder()
                                 .title(getinputTitle).body(getinputBody)
@@ -146,6 +149,7 @@ public class Add_Task extends AppCompatActivity {
                         Log.i("add to team ", "onCreate: "+task2.getTeam().getName());
                         break;
                     case "Team3":
+                        uploadFile();
                         Task task3 = Task.builder()
                                 .title(getinputTitle)
                                 .body(getinputBody)
@@ -165,6 +169,9 @@ public class Add_Task extends AppCompatActivity {
             }
 
         });
+
+
+        //----------------------------------------------------------
         Button pickFileButton = findViewById(R.id.upload);
         pickFileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,6 +181,61 @@ public class Add_Task extends AppCompatActivity {
             }
         });
 
+
+       //--------------------------------------------------------------------
+//      Intent intent = getIntent();
+//      Bundle bundle=intent.getExtras();
+//      Uri uri= (Uri) bundle.get(Intent.EXTRA_STREAM);
+//      if (intent.getType()!= null){
+//
+//
+//
+//      }
+    }
+    @SuppressLint("SimpleDateFormat")
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null){
+
+
+            Log.i("INTENT in RESUME", "onResume: "+intent.getData());
+
+            if (intent.getType().equals("text/plain")){
+                taskTitleInput.setText(extras.get("android.intent.extra.SUBJECT").toString());
+                taskDescriptionInput.setText(extras.get("android.intent.extra.TEXT").toString());
+            }else if (intent.getType().contains("image/")){
+
+                Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                String src = uri.getPath();
+
+                imgSrc =src;
+
+                fileType = getContentResolver().getType(uri);
+                fileName = new SimpleDateFormat("yyMMddHHmmssZ").format(new Date())+"." + fileType.split("/")[1];
+
+                File source = new File(src);
+                String file = uri.getLastPathSegment();
+                File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CustomFolder"+file);
+                uploadFile = new File(getApplicationContext().getFilesDir(), "uploadFile");
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(uri);
+                    FileUtils.copy(inputStream, new FileOutputStream(uploadFile));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (imgSrc != null){
+            TextView imgSrc = findViewById(R.id.imgSrc);
+            imgSrc.setText(this.imgSrc);
+            imgSrc.setVisibility(View.VISIBLE);
+        }
     }
     private void getTeams() {
         Amplify.API.query(
@@ -216,29 +278,11 @@ public class Add_Task extends AppCompatActivity {
 @Override
     protected void onActivityResult(int requesstCode,int resultCode, @Nullable Intent data) {
     super.onActivityResult(requesstCode, resultCode, data);
-    System.out.println("l");
-    System.out.println(data);
     assert data != null;
     dataUri = data.getData();
     Uri uri = data.getData();
-//    File file = new File(dataUri.getPath());
-//    fileName = file.getName();
-    String src = uri.getPath();
 
-//    Log.i("0000", file.toString());
-////    uploadFile(file);
-//
-////    if (requesstCode == CODE_REQUEST && resultCode == RESULT_OK) {
-//         file = new File(getApplicationContext().getFilesDir(), "file");
-//        Log.i("s", "create stream");
-////            key = new Date().toString()+" File";
-//    try {
-//        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-//        writer.append("Example file contents");
-//        writer.close();
-//    } catch (Exception exception) {
-//        Log.e("MyAmplifyApp", "Upload failed", exception);
-//    }
+    String src = uri.getPath();
     fileType = getContentResolver().getType(uri);
     fileName = new SimpleDateFormat("yyMMddHHmmssZ").format(new Date())+"." + fileType.split("/")[1];
     File source = new File(src);
@@ -246,22 +290,12 @@ public class Add_Task extends AppCompatActivity {
     File destination = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/CustomFolder"+file);
     uploadFile = new File(getApplicationContext().getFilesDir(), "uploadFile");
 
-//    Amplify.Storage.uploadFile(
-//            file,
-//            uploadFile,
-//            result -> {Log.i("MyAmplifyApp", "Successfully uploaded: " + result.getKey());
-//            key= result.getKey();
-//
-//            },
-//            storageFailure -> Log.e("MyAmplifyApp", "Upload failed", storageFailure)
-//    );
     try {
         InputStream inputStream = getContentResolver().openInputStream(data.getData());
         FileUtils.copy(inputStream, new FileOutputStream(uploadFile));
     } catch (IOException e) {
         e.printStackTrace();
     }
-
 
 }
 
