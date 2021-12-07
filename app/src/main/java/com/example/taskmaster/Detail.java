@@ -53,6 +53,9 @@ public class Detail extends AppCompatActivity {
         TextView titleholder4 = findViewById(R.id.team);
         titleholder4.setText(TextteamNameId);
 //        titleholder3.setText(task.getState());
+        TextView locationText = findViewById(R.id.locationText);
+        locationText.setText("Lat: "+intent.getExtras().getString("taskLat")+", Long: "+intent.getExtras().getString("taskLong"));
+
 
         fileName = intent.getExtras().getString("taskFileName");
 

@@ -258,6 +258,8 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
         intent.putExtra("detail_state", ( task.getState()));
         intent.putExtra("team_name", ( task.getTeam().getName()));
         intent.putExtra("taskFileName", task.getFileName());
+        intent.putExtra("taskLong", task.getLocation().get(0));
+        intent.putExtra("taskLat", task.getLocation().get(1));
         startActivity(intent);
     }
     public boolean isNetworkAvailable(Context context) {
