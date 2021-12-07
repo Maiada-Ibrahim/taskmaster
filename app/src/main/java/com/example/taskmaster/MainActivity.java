@@ -28,6 +28,7 @@ import com.amplifyframework.AmplifyException;
 import com.amplifyframework.api.aws.AWSApiPlugin;
 import com.amplifyframework.api.graphql.model.ModelMutation;
 import com.amplifyframework.api.graphql.model.ModelQuery;
+import com.amplifyframework.auth.AuthUser;
 import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin;
 import com.amplifyframework.auth.cognito.activities.HostedUIRedirectActivity;
 import com.amplifyframework.core.Amplify;
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
     private SharedPreferences sharedPreferences;
     private String teamName = "";
     ArrayList<com.amplifyframework.datastore.generated.model.Task> tasksFirst =new  ArrayList<>();
-    ArrayList<com.amplifyframework.datastore.generated.model.Task> tasksTeam =new  ArrayList<>();
 
     AtomicReference<List<com.amplifyframework.datastore.generated.model.Task>> tasks1 = new AtomicReference<>(new ArrayList<>());
 
@@ -165,6 +165,9 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
                                         error -> Log.e("AuthQuickstart", error.toString())
                                 );
                                 Login.setText("sign in");
+                                TextView userNameHolder = findViewById(R.id.userNameLable);
+                                AuthUser authUser = Amplify.Auth.getCurrentUser();
+                                userNameHolder.setText(authUser.getUsername());
                             }
                             else{
 
@@ -194,10 +197,11 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
         String userName = sharedPreferences.getString("getUserName", "the user didn't add a name yet!");
         String teamName = sharedPreferences.getString("teamName", "the user didn't add a team yet!");
 
-        TextView userNameHolder = findViewById(R.id.userNameLable);
-        userNameHolder.setText(userName);
+
+
         TextView userNameHolder2 = findViewById(R.id.TeamNameId);
         userNameHolder2.setText(teamName);
+
 
 //        List<Task> tasks ;
 //        DataBase db  = DataBase.getDataBaseObj(this.getApplicationContext());
@@ -220,16 +224,16 @@ public class MainActivity extends AppCompatActivity implements taskAdapter.OnNot
         Amplify.API.query(
                 ModelQuery.list(com.amplifyframework.datastore.generated.model.Task.class),
                 response -> {
-
+                    tasksFirst.clear();
                     for (com.amplifyframework.datastore.generated.model.Task task : response.getData()) {
 //                        System.out.println(task.getTeam().getName());
-//                        tasksFirst.clear();
-//                        if(task.getTeam().getName().contains(teamName)){
+
+                        if(task.getTeam().getName().equals(teamName)){
                         Log.i("MyAmplifyApp", task.getTeam().getName());
 
 
                         tasksFirst.add(task);
-//                    }
+                    }
                     }
 //
 //
