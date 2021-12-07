@@ -45,7 +45,7 @@ in this lab we added an authentication system to our android application using o
 ![](signin.png)
 ![](signout.png)
 
-## Lab: 36 - Cognito:
+## Lab: 38 - : S3
 Added the ability for our app to upload files and store it on AWS S3 and assign it to specific task, also added the ability to view the file that has been uploaded when click on a task in task details page.
 ![](lab-42.png)
 ## lab 41 - intent filters
