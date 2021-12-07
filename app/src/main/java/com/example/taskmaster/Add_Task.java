@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.location.LocationRequest;
+//import android.location.LocationRequest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,10 +51,13 @@ import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationResult;
+//import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.tasks.OnCompleteListener;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -141,13 +144,18 @@ public class Add_Task extends AppCompatActivity {
                 String getinputState = inputState.getText().toString();
 //                String getinputeam = radioButton.getText().toString();
 
+                ArrayList<String> location = new ArrayList<>();
+                location.add(longitude);
+                location.add(latitude);
+
+
                 switch(teamSpinner.getSelectedItem().toString()){
                     case "Team1":
                         uploadFile();
                         Task task = Task.builder()
                                 .title(getinputTitle).body(getinputBody)
                                 .state(getinputState)
-
+                                .location(location)
                                 .fileName(fileName)
 
                                 .team(teams.get("Team1"))
@@ -164,7 +172,7 @@ public class Add_Task extends AppCompatActivity {
                                 .title(getinputTitle).body(getinputBody)
                                 .state(getinputState).team(teams.get("Team2"))
                                 .fileName(key)
-
+                                .location(location)
                                 .build();
                         saveToAPI(task2);
                         Log.i("add to team ", "onCreate: "+task2.getTeam().getName());
@@ -176,6 +184,7 @@ public class Add_Task extends AppCompatActivity {
                                 .body(getinputBody)
                                 .state(getinputState)
                                 .team(teams.get("Team3"))
+                                .location(location)
                                 .fileName(key)
                                 .build();
                         saveToAPI(task3);
@@ -189,6 +198,7 @@ public class Add_Task extends AppCompatActivity {
                 toast.show();
             }
 
+
         });
 
 
@@ -199,8 +209,12 @@ public class Add_Task extends AppCompatActivity {
             public void onClick(View v) {
                 pickFile();
                 Toast.makeText(Add_Task.this, "pick", Toast.LENGTH_SHORT).show();
+                getLastLocation();
             }
-        });
+
+        }
+
+        );
 
 
        //--------------------------------------------------------------------
@@ -256,6 +270,10 @@ public class Add_Task extends AppCompatActivity {
             TextView imgSrc = findViewById(R.id.imgSrc);
             imgSrc.setText(this.imgSrc);
             imgSrc.setVisibility(View.VISIBLE);
+        }
+
+        if (checkPermissions()) {
+            getLastLocation();
         }
     }
     private void getTeams() {
@@ -353,9 +371,9 @@ public class Add_Task extends AppCompatActivity {
 
                 });
             } else {
-                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
+//                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                startActivity(intent);
             }
         } else {
             requestPermissions();
@@ -370,7 +388,7 @@ public class Add_Task extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void requestNewLocationData() {
-        LocationRequest mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest ();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(5);
         mLocationRequest.setFastestInterval(0);

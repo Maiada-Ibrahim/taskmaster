@@ -17,6 +17,7 @@ import com.amplifyframework.auth.AuthUser;
 import com.amplifyframework.core.Amplify;
 
 public class Settings extends AppCompatActivity {
+
     Spinner spinner;
 
     @Override

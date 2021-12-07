@@ -6,7 +6,7 @@ type Task @model
   body: String
   state: String
   fileName: String
-  location: String
+  location: [String]
   team: Team @connection (fields:["teamID"])
 }
 type Team @model
