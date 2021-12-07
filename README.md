@@ -43,6 +43,7 @@ in this lab, we created cloud storage, on which each time the data saved it, hit
 
 # Lab: 33 - Related Data:
 in this lab, we created a new model at the graphql to assign the task to the team. At the biggining we hit the server (database) and save three teams for one time (teamA,B,C). After that we added a spinner at the add task activity to assign the task at one of the three teams.
+![]()
 
 
 ## Lab: 36 - Cognito:
@@ -50,7 +51,9 @@ in this lab we added an authentication system to our android application using o
 ![](signin.png)
 ![](signout.png)
 
-
+## Lab: 36 - Cognito:
+Added the ability for our app to upload files and store it on AWS S3 and assign it to specific task, also added the ability to view the file that has been uploaded when click on a task in task details page.
+![](lab-42.png)
 ## lab 41 - intent filters
 Added intent filters to my app, which enables the user to share text files and images to my app, which in turn navigates him to "Add Task" page with file he shared filled up in form.
 ![](lab-41pic1.png)
