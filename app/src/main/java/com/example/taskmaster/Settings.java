@@ -10,7 +10,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.amplifyframework.auth.AuthUser;
+import com.amplifyframework.core.Amplify;
 
 public class Settings extends AppCompatActivity {
     Spinner spinner;
@@ -19,6 +23,13 @@ public class Settings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+
+
+        TextView username = findViewById(R.id.username);
+        AuthUser authUser = Amplify.Auth.getCurrentUser();
+        username.setText(authUser.getUsername());
+
 
         spinner = findViewById(R.id.chooseTeamSpinner);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,
@@ -32,8 +43,11 @@ public class Settings extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText username = findViewById(R.id.username);
-                String getUserName = username.getText().toString();
+
+//                EditText username = findViewById(R.id.username);
+//                String getUserName = username.getText().toString();
+                EditText name = findViewById(R.id.username);
+
 
                 // add value to the shared preferences
                 SharedPreferences settingShare= PreferenceManager.getDefaultSharedPreferences(Settings.this);
@@ -41,7 +55,9 @@ public class Settings extends AppCompatActivity {
 //                settingShare.edit().putString("getUserName",getUserName).apply();
                 // second option
                 SharedPreferences.Editor sharedPreferencesEditor = settingShare.edit();
-                sharedPreferencesEditor.putString("getUserName", getUserName);
+//                sharedPreferencesEditor.putString("getUserName", getUserName);
+                sharedPreferencesEditor.putString("name", name.getText().toString());
+
 //                sharedPreferencesEditor.apply();
                 Toast.makeText(Settings.this,"submitted!", Toast.LENGTH_LONG).show();
 

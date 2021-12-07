@@ -6,16 +6,23 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationRequest;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,6 +50,10 @@ import com.amplifyframework.core.Amplify;
 import com.amplifyframework.datastore.generated.model.Task;
 import com.amplifyframework.datastore.generated.model.Team;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.BufferedWriter;
@@ -89,11 +100,17 @@ public class Add_Task extends AppCompatActivity {
     String imgSrc;
 
 
+    FusedLocationProviderClient mFusedLocationClient;
+    int PERMISSION_ID = 44;
+    String longitude;
+    String latitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
         ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<>(this,
@@ -130,8 +147,11 @@ public class Add_Task extends AppCompatActivity {
                         Task task = Task.builder()
                                 .title(getinputTitle).body(getinputBody)
                                 .state(getinputState)
+
                                 .fileName(fileName)
+
                                 .team(teams.get("Team1"))
+
                                 .build();
                         saveToAPI(task);
                         Log.i("add to team ", "onCreate: "+task.getTeam().getName());
@@ -144,6 +164,7 @@ public class Add_Task extends AppCompatActivity {
                                 .title(getinputTitle).body(getinputBody)
                                 .state(getinputState).team(teams.get("Team2"))
                                 .fileName(key)
+
                                 .build();
                         saveToAPI(task2);
                         Log.i("add to team ", "onCreate: "+task2.getTeam().getName());
@@ -310,5 +331,84 @@ public class Add_Task extends AppCompatActivity {
                     Log.e(TAG, "uploadFileToS3: failed " + error.toString());
                 }
         );
+    }
+    //-------location----------------
+    @SuppressLint("MissingPermission")
+    private void getLastLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onComplete(@NonNull com.google.android.gms.tasks.Task<Location> task) {
+                        Location location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
+                            longitude = String.valueOf(location.getLongitude());
+                            latitude = String.valueOf(location.getLatitude());
+
+                        }
+                    }
+
+                });
+            } else {
+                Toast.makeText(this, "Please turn on" + " your location...", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        } else {
+            requestPermissions();
+        }
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestNewLocationData() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setNumUpdates(1);
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+
+    }
+    private LocationCallback mLocationCallback = new LocationCallback() {
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+            longitude = String.valueOf(mLastLocation.getLongitude());
+            latitude = String.valueOf(mLastLocation.getLatitude());
+        }
+    };
+
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+    }
+
+    private boolean checkPermissions() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == PERMISSION_ID) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
+            }
+        }
     }
 }
