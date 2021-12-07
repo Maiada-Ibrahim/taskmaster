@@ -292,7 +292,7 @@ public class Add_Task extends AppCompatActivity {
                                 this.teams.put("Team3", team);
                                 break;
                         }
-                        System.out.println(teams.get("Team1"));
+
                     }
                 },
                 error -> Log.e("MyAmplifyApp", "Query failure", error)
